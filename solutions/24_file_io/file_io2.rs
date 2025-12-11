@@ -26,10 +26,11 @@ fn main() {
     let mut buffered_file_writer = BufWriter::new(output_file.ok().unwrap());
 
     let mut line_number = 1;
-    
+
     for line in buffered_input_file.lines() {
         if let Ok(line) = line {
-            let write_result =buffered_file_writer.write(format!("Line {} : {}\n", line_number, line).as_bytes());
+            let write_result =
+                buffered_file_writer.write(format!("Line {} : {}\n", line_number, line).as_bytes());
             if write_result.is_err() {
                 eprintln!("Write result error: {}", write_result.unwrap_err());
                 break;
