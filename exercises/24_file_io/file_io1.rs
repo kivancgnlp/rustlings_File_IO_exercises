@@ -12,9 +12,8 @@ fn main() {
             // TODO : What would be the expected text ?
             assert_eq!(, contents);
         }
-        Err(e) => {
-            eprintln!("Error reading file: {}", e);
-            assert!(false);
+        Err(_) => {
+            panic!("Error reading file.");
         }
     }
 }
@@ -22,8 +21,8 @@ fn main() {
 fn create_required_files() {
     let file_path = Path::new(TEST_FILE_NAME);
 
-    if file_path.exists() == false {
-        fs::write(&file_path, "This is the file content.").unwrap();
+    if !file_path.exists() {
+        fs::write(file_path, "This is the file content.").unwrap();
         println!("File created.");
     }
 }

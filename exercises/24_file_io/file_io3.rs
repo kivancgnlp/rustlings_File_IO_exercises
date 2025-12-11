@@ -1,8 +1,7 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 fn main() {
-
     create_required_files();
     let mut path_buffer = PathBuf::new();
 
@@ -18,34 +17,27 @@ fn main() {
         println!("File size {}", meta_data.len());
         assert_eq!(meta_data.len(), 117);
         println!("File permissions {:?}", meta_data.permissions());
-        assert_eq!(meta_data.permissions().readonly(), false);
-    }else {
-        println!("Could not get metadata");
-        assert!(false);
+        assert!(!meta_data.permissions().readonly());
+    } else {
+        panic!("Could not get metadata");
     }
-
-
-
-
 }
 
-fn create_required_files(){
+fn create_required_files() {
     let file_path = PathBuf::from("SampleFilesFolder/MultiLineTextFile.txt");
 
     let dir_path = file_path.parent().unwrap();
 
-    if dir_path.exists() == false {
+    if !dir_path.exists() {
         fs::create_dir(dir_path).unwrap();
         println!("Created directory {:?}", dir_path);
     }
 
-    if file_path.exists() == false {
-
+    if !file_path.exists() {
         let text = "This is the first line of the text.
         This is the second line.
         And this is the third and the last line.";
-        fs::write(&file_path, text).unwrap();
+        fs::write(file_path, text).unwrap();
         println!("File created.");
     }
-
 }
