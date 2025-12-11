@@ -48,11 +48,11 @@ fn main() {
 fn create_required_files(){
     let file_path = Path::new(TEST_FILE_NAME);
 
-    if file_path.exists() == false {
+    if !file_path.exists() {
         let text = "This is the first line of the text.
         This is the second line.
         And this is the third and the last line.";
-        fs::write(&file_path, text).unwrap();
+        fs::write(file_path, text).unwrap();
         println!("File created.");
     }
 

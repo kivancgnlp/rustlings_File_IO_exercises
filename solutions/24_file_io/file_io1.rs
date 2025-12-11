@@ -13,8 +13,8 @@ fn main() {
             assert_eq!("This is the file content.", contents);
         }
         Err(e) => {
-            eprintln!("Error reading file: {}", e);
-            assert!(false);
+            panic!("Error reading file.");
+
         }
     }
 }
