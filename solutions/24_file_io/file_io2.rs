@@ -26,9 +26,8 @@ fn main() {
     let mut buffered_file_writer = BufWriter::new(output_file.ok().unwrap());
 
     let mut line_number = 1;
-    let mut lines = buffered_input_file.lines();
-
-    for line in lines {
+    
+    for line in buffered_input_file.lines() {
         if let Ok(line) = line {
             let write_result =buffered_file_writer.write(format!("Line {} : {}\n", line_number, line).as_bytes());
             if write_result.is_err() {
