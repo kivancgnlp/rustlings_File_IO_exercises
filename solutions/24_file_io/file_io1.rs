@@ -14,3 +14,22 @@ fn main() {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_working_directory() {
+        let working_directory_result = std::path::Path::new(".").canonicalize();
+
+        match working_directory_result {
+            Ok(working_directory) => {
+                println!("The working directory is {:?}", working_directory);
+            }
+            Err(error) => {
+                println!("Error: {:?}", error);
+            }
+        }
+    }
+}
