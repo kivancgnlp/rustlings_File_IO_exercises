@@ -12,7 +12,7 @@ fn main() {
         Ok(contents) => {
             assert_eq!("This is the file content.", contents);
         }
-        Err(e) => {
+        Err(_) => {
             panic!("Error reading file.");
 
         }
