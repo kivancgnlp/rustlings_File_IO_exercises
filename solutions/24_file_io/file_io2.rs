@@ -1,10 +1,14 @@
 
 use std::fs;
 use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::path::Path;
+
+const TEST_FILE_NAME: &str = "MultiLineTextFile.txt";
 
 fn main() {
 
-    let input_file = fs::File::open("solutions/24_file_io/SampleFilesFolder/MultiLineTextFile.txt");
+    create_required_files();
+    let input_file = fs::File::open(TEST_FILE_NAME);
 
     if input_file.is_err() {
         eprintln!("Input file open error : {}", input_file.as_ref().unwrap_err());
@@ -39,4 +43,17 @@ fn main() {
     }
 
     println!("{} : lines processed", line_number - 1);
+}
+
+fn create_required_files(){
+    let file_path = Path::new(TEST_FILE_NAME);
+
+    if file_path.exists() == false {
+        let text = "This is the first line of the text.
+        This is the second line.
+        And this is the third and the last line.";
+        fs::write(&file_path, text).unwrap();
+        println!("File created.");
+    }
+
 }

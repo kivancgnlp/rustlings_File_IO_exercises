@@ -1,8 +1,12 @@
 use std::fs;
+use std::path::Path;
 
+const TEST_FILE_NAME: &str = "SampleTextFile.txt";
 fn main() {
 
-    let read_str_result = fs::read_to_string("solutions/24_file_io/SampleFilesFolder/SampleTextFile.txt");
+    create_required_files();
+
+    let read_str_result = fs::read_to_string(TEST_FILE_NAME);
 
     match read_str_result {
         Ok(contents) => {
@@ -15,21 +19,13 @@ fn main() {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
 
-    #[test]
-    fn test_working_directory() {
-        let working_directory_result = std::path::Path::new(".").canonicalize();
+fn create_required_files(){
+    let file_path = Path::new(TEST_FILE_NAME);
 
-        match working_directory_result {
-            Ok(working_directory) => {
-                println!("The working directory is {:?}", working_directory);
-            }
-            Err(error) => {
-                println!("Error: {:?}", error);
-            }
-        }
+    if !file_path.exists() {
+        fs::write(file_path, "This is the file content.").unwrap();
+        println!("File created.");
     }
+
 }
