@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 
 fn main() {
 
@@ -17,10 +17,10 @@ fn main() {
         println!("File size {}", meta_data.len());
         assert_eq!(meta_data.len(), 117);
         println!("File permissions {:?}", meta_data.permissions());
-        assert_eq!(meta_data.permissions().readonly(), false);
+        assert!(!meta_data.permissions().readonly());
     }else {
-        println!("Could not get metadata");
-        assert!(false);
+        panic!("Could not get metadata");
+
     }
 
 
