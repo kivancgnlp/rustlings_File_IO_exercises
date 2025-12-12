@@ -1,4 +1,5 @@
 use std::fs;
+use std::io::Error;
 use std::path::PathBuf;
 
 fn main() -> Result<(), std::io::Error> {
@@ -32,12 +33,7 @@ fn create_required_files() -> Result<(), std::io::Error> {
 
     let dir_path = match file_path.parent() {
         Some(parent) => parent,
-        None => {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                "Could not get parent path",
-            ));
-        }
+        None => return Err(Error::other("Could not get parent path"))
     };
 
     if !dir_path.exists() {
