@@ -7,24 +7,20 @@ const TEST_OUTPUT_FILE_NAME: &str = "MultiLineOutputFile.txt";
 
 fn main() {
     create_required_files();
-    let input_file = fs::File::open(TEST_INPUT_FILE_NAME);
 
-    if input_file.is_err() {
-        panic!("Input file open error");
-    }
+    let input_file = match fs::File::open(TEST_INPUT_FILE_NAME) {
+        Ok(f) => f,
+        Err(e) => panic!("Input file open error : {}", e),
+    };
 
-    let buffered_input_file = BufReader::new(input_file.unwrap());
+    let buffered_input_file = BufReader::new(input_file);
 
-    let output_file = fs::File::create(TEST_OUTPUT_FILE_NAME);
+    let output_file = match fs::File::create(TEST_OUTPUT_FILE_NAME) {
+        Ok(f) => f,
+        Err(e) => panic!("Output file open error : {}", e),
+    };
 
-    if output_file.is_err() {
-        eprintln!(
-            "Output file open error : {}",
-            output_file.as_ref().unwrap_err()
-        );
-        panic!("Output file open error");
-    }
-    let mut buffered_file_writer = BufWriter::new(output_file.ok().unwrap());
+    let mut buffered_file_writer = BufWriter::new(output_file);
 
     let mut line_number = 1;
 

@@ -11,19 +11,20 @@ fn main() {
     // TODO : How to get metadata using path_buffer ?
     let meta_data_result = path_buffer.
 
-    if let Ok(meta_data) = meta_data_result {
-        println!("Metadata about the file : {:?}", path_buffer);
-        println!("File creation time {:?}", meta_data.created());
-        println!("File size {}", meta_data.len());
-        assert_eq!(meta_data.len(), 117);
-        println!("File permissions {:?}", meta_data.permissions());
-        assert!(!meta_data.permissions().readonly());
-    } else {
-        eprintln!(
-            "Could not get metadata. Error: {:?}",
-            meta_data_result.err()
-        );
+    match meta_data_result {
+        Ok(meta_data) => {
+            println!("Metadata about the file : {:?}", path_buffer);
+            println!("File creation time {:?}", meta_data.created());
+            println!("File size {}", meta_data.len());
+            assert_eq!(meta_data.len(), 117);
+            println!("File permissions {:?}", meta_data.permissions());
+            assert!(!meta_data.permissions().readonly());
+        }
+        Err(error) => {
+            eprintln!("Could not get metadata. Error: {:?}", error);
+        }
     }
+
 
     file_cleanup();
 }
@@ -48,12 +49,8 @@ fn create_required_files() {
 
         if file_write_result.is_ok() {
             println!("Multi line file created successfully!");
-        } else {
-            eprintln!(
-                "Error creating file : {} , error : {:?}",
-                file_path.display(),
-                file_write_result.err()
-            );
+        }else {
+            eprintln!("Error creating file : {} , error : {:?}", file_path.display(), file_write_result.err());
         }
     }
 }
@@ -68,7 +65,7 @@ fn file_cleanup() {
         let remove_status = fs::remove_file(&path_buffer);
         if remove_status.is_ok() {
             println!("Test file deleted.");
-        } else {
+        }else {
             panic!("Error deleting file.");
         }
     }
@@ -79,7 +76,7 @@ fn file_cleanup() {
         let remove_status = fs::remove_dir(&path_buffer);
         if remove_status.is_ok() {
             println!("Test directory deleted.");
-        } else {
+        }else {
             panic!("Error deleting directory.");
         }
     }

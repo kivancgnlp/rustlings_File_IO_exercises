@@ -10,18 +10,18 @@ fn main() {
 
     let meta_data_result = path_buffer.metadata();
 
-    if let Ok(meta_data) = meta_data_result {
-        println!("Metadata about the file : {:?}", path_buffer);
-        println!("File creation time {:?}", meta_data.created());
-        println!("File size {}", meta_data.len());
-        assert_eq!(meta_data.len(), 117);
-        println!("File permissions {:?}", meta_data.permissions());
-        assert!(!meta_data.permissions().readonly());
-    } else {
-        eprintln!(
-            "Could not get metadata. Error: {:?}",
-            meta_data_result.err()
-        );
+    match meta_data_result {
+        Ok(meta_data) => {
+            println!("Metadata about the file : {:?}", path_buffer);
+            println!("File creation time {:?}", meta_data.created());
+            println!("File size {}", meta_data.len());
+            assert_eq!(meta_data.len(), 117);
+            println!("File permissions {:?}", meta_data.permissions());
+            assert!(!meta_data.permissions().readonly());
+        }
+        Err(error) => {
+            eprintln!("Could not get metadata. Error: {:?}", error);
+        }
     }
 
     file_cleanup();

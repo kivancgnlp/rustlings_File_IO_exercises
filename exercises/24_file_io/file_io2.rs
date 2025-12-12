@@ -7,25 +7,21 @@ const TEST_OUTPUT_FILE_NAME: &str = "MultiLineOutputFile.txt";
 
 fn main() {
     create_required_files();
-    let input_file = fs::File::open(TEST_INPUT_FILE_NAME);
 
-    if input_file.is_err() {
-        panic!("Input file open error");
-    }
+    let input_file = match fs::File::open(TEST_INPUT_FILE_NAME) {
+        Ok(f) => f,
+        Err(e) => panic!("Input file open error : {}", e),
+    };
+
+    let buffered_input_file = BufReader::new(input_file);
+
+    let output_file = match fs::File::create(TEST_OUTPUT_FILE_NAME){
+        Ok(f) => f,
+        Err(e) => panic!("Output file open error : {}", e),
+    };
 
     // TODO : How to create a new BufReader using input file
     let buffered_input_file =;
-
-    let output_file = fs::File::create(TEST_OUTPUT_FILE_NAME);
-
-    if output_file.is_err() {
-        eprintln!(
-            "Output file open error : {}",
-            output_file.as_ref().unwrap_err()
-        );
-        panic!("Output file open error");
-    }
-    let mut buffered_file_writer = BufWriter::new(output_file.ok().unwrap());
 
     let mut line_number = 1;
 
@@ -58,17 +54,14 @@ fn create_required_files() {
 
         if file_write_result.is_ok() {
             println!("Multi line file created successfully!");
-        } else {
-            eprintln!(
-                "Error creating file : {} , error : {:?}",
-                file_path.display(),
-                file_write_result.err()
-            );
+        }else {
+            eprintln!("Error creating file : {} , error : {:?}", file_path.display(), file_write_result.err());
         }
     }
 }
 
 fn file_cleanup() {
+
     let file_names = vec![TEST_INPUT_FILE_NAME, TEST_OUTPUT_FILE_NAME];
 
     for file_name in file_names {
@@ -78,15 +71,13 @@ fn file_cleanup() {
             let remove_status = fs::remove_file(file_path);
             if remove_status.is_ok() {
                 println!("Successfully deleted file {}", file_name);
-            } else {
-                eprintln!(
-                    "Error deleting file {}, err : {:?}",
-                    file_name,
-                    remove_status.err()
-                );
+            }else {
+                eprintln!("Error deleting file {}, err : {:?}", file_name, remove_status.err());
             }
-        } else {
+        }else {
             println!("No cleanup necassary since {} not exist.", file_name);
         }
     }
+
 }
+
