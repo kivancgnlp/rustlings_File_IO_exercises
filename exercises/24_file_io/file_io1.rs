@@ -2,8 +2,8 @@ use std::fs;
 use std::path::Path;
 
 const TEST_FILE_NAME: &str = "SampleTextFile.txt";
-fn main() {
-    create_required_files();
+fn main() -> Result<(), std::io::Error> {
+    create_required_files()?;
 
     let read_str_result = fs::read_to_string(TEST_FILE_NAME);
 
@@ -17,35 +17,35 @@ fn main() {
         }
     }
 
-    file_cleanup();
+    file_cleanup()?;
+    Ok(())
 }
 
-fn create_required_files() {
+fn create_required_files() -> Result<(), std::io::Error> {
     let file_path = Path::new(TEST_FILE_NAME);
 
     if !file_path.exists() {
-        let file_write_result = fs::write(file_path, "This is the file content.");
-        if file_write_result.is_ok() {
-            println!("Successfully wrote to file.");
-        } else {
-            panic!("Error writing to file.");
-        }
+        fs::write(file_path, "This is the file content.")?;
     } else {
         println!("File already exist.");
     }
+
+    Ok(())
 }
 
-fn file_cleanup() {
+fn file_cleanup() -> Result<(), std::io::Error> {
     let file_path = Path::new(TEST_FILE_NAME);
 
     if file_path.exists() {
-        let remove_status = fs::remove_file(file_path);
-        if remove_status.is_ok() {
-            println!("Successfully removed file.");
-        } else {
-            panic!("Error deleting file.");
-        }
+        fs::remove_file(file_path).inspect(|_| {
+            println!("Test file {} deleted.", TEST_FILE_NAME);
+        })?;
     } else {
-        println!("No cleanup necassary since file not exist.");
+        println!(
+            "No cleanup necessary since {} not exist.",
+            file_path.display()
+        );
     }
+
+    Ok(())
 }

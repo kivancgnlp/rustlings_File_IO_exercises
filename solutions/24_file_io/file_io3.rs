@@ -1,8 +1,8 @@
 use std::fs;
 use std::path::PathBuf;
 
-fn main() {
-    create_required_files();
+fn main() -> Result<(), std::io::Error> {
+    create_required_files()?;
     let mut path_buffer = PathBuf::new();
 
     path_buffer.push("SampleFilesFolder");
@@ -24,62 +24,58 @@ fn main() {
         }
     }
 
-    file_cleanup();
+    file_cleanup()
 }
 
-fn create_required_files() {
+fn create_required_files() -> Result<(), std::io::Error> {
     let file_path = PathBuf::from("SampleFilesFolder/MultiLineTextFile.txt");
 
-    let dir_path = file_path.parent().unwrap();
+    let dir_path = match file_path.parent() {
+        Some(parent) => parent,
+        None => {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Could not get parent path",
+            ));
+        }
+    };
 
     if !dir_path.exists() {
-        let dir_create_result = fs::create_dir(dir_path);
-        if dir_create_result.is_ok() {
-            println!("{:?} created", dir_path);
-        }
+        fs::create_dir(dir_path).inspect_err(|x| {
+            eprintln!("Could not create directory: {:?}", x);
+        })?;
     }
 
     if !file_path.exists() {
         let text = "This is the first line of the text.
         This is the second line.
         And this is the third and the last line.";
-        let file_write_result = fs::write(&file_path, text);
-
-        if file_write_result.is_ok() {
-            println!("Multi line file created successfully!");
-        } else {
-            eprintln!(
-                "Error creating file : {} , error : {:?}",
-                file_path.display(),
-                file_write_result.err()
-            );
-        }
+        fs::write(&file_path, text).inspect_err(|err| {
+            eprintln!("Couldn't create test file: {:?}", err);
+        })?;
     }
+
+    Ok(())
 }
 
-fn file_cleanup() {
+fn file_cleanup() -> Result<(), std::io::Error> {
     let mut path_buffer = PathBuf::new();
 
     path_buffer.push("SampleFilesFolder");
     path_buffer.push("MultiLineTextFile.txt");
 
     if path_buffer.exists() {
-        let remove_status = fs::remove_file(&path_buffer);
-        if remove_status.is_ok() {
-            println!("Test file deleted.");
-        } else {
-            panic!("Error deleting file.");
-        }
+        fs::remove_file(&path_buffer).inspect(|_| {
+            println!("Test file removed");
+        })?;
     }
-
     path_buffer.pop();
 
     if path_buffer.exists() {
-        let remove_status = fs::remove_dir(&path_buffer);
-        if remove_status.is_ok() {
-            println!("Test directory deleted.");
-        } else {
-            panic!("Error deleting directory.");
-        }
+        fs::remove_dir(&path_buffer).inspect(|_| {
+            println!("Test dir removed");
+        })?;
     }
+
+    Ok(())
 }
